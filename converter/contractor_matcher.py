@@ -2,6 +2,14 @@
 import pandas as pd
 import logging
 from typing import Dict, Optional
+from dataclasses import dataclass
+
+
+@dataclass
+class Contractor:
+    name: str
+    nip: str
+
 
 class ContractorMatcher:
     def __init__(self, contractors_filepath: str):
@@ -70,3 +78,16 @@ class ContractorMatcher:
             row['adres'] = ''
 
         return row
+
+    def match_by_name_fragment(self, name_fragment: str) -> Optional[Contractor]:
+        """
+        Szuka kontrahenta po fragmencie nazwy.
+
+        :param name_fragment: Fragment nazwy kontrahenta.
+        :return: Obiekt Contractor lub None.
+        """
+        matches = self.contractors_df[self.contractors_df['Nazwa'].str.contains(name_fragment, case=False, na=False)]
+        if not matches.empty:
+            first_match = matches.iloc[0]
+            return Contractor(name=first_match['Nazwa'], nip=first_match['NIP'])
+        return None

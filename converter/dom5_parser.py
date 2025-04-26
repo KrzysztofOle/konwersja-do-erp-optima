@@ -1,7 +1,9 @@
 # dom5_parser.py
 import pandas as pd
 
+
 class Dom5Parser:
+
     @staticmethod
     def parse(df: pd.DataFrame) -> pd.DataFrame:
         """
