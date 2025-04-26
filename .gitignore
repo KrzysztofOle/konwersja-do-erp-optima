@@ -172,3 +172,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# moje wpisy specyficzne dla aplikacji
+data/input/
+data/output/
