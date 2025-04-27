@@ -1,30 +1,65 @@
 # === test_marka_parser.py ===
+import unittest
 from pathlib import Path
 from converter.contractor_matcher import ContractorMatcher
 from converter.marka_parser import parse_marka_sales
 
 
-def test_parse_marka_sales():
-    plik_sprzedazy = Path("../data/input/sprzedaz.csv")
-    plik_kontrahenci = Path("../data/input/listaFirm.csv")
+class TestMarkaParser(unittest.TestCase):
 
-    matcher = ContractorMatcher(plik_kontrahenci)
-    wynik = parse_marka_sales(plik_sprzedazy, matcher)
+    def setUp(self):
+        self.plik_sprzedazy = Path("../data/input/sprzedaz.csv")
+        self.plik_kontrahenci = Path("../data/input/listaFirm.csv")
+        self.matcher = ContractorMatcher(self.plik_kontrahenci)
 
-    assert wynik, "Parser nie zwrócił żadnych danych!"
+    def test_liczba_faktur(self):
+        wynik = parse_marka_sales(self.plik_sprzedazy, self.matcher)
 
-    print(f"\nWynik parsowania: {len(wynik)} faktur\n")
-    for idx, row in enumerate(wynik[75:86], start=76):
-        print(f"{idx + 1}. Numer faktury: {row['numer_faktury']}")
-        print(f"   Kontrahent: {row['nazwa_kontrahenta']} (NIP: {row['nip']})")
-        print(f"   Data wystawienia: {row['data_wystawienia']}, Data sprzedaży: {row['data_sprzedazy']}")
-        print(f"   Wartość netto: {row['wartosc_netto']} PLN, Wartość brutto: {row['wartosc_brutto']} PLN, VAT: {row['vat']} PLN")
-        if 'stawki_vat' in row and row['stawki_vat']:
-            print("   Stawki VAT:")
-            for stawka in row['stawki_vat']:
-                print(f"     - {stawka['stawka']}%: Netto {stawka['netto']} PLN, VAT {stawka['vat']} PLN")
-        print("")
+        # Sprawdzamy, że wczytano dokładnie 91 faktur
+        self.assertEqual(len(wynik), 91, f"Powinno być 91 faktur, jest {len(wynik)}!")
+
+        # Sprawdzamy numery pierwszych 87 faktur
+        for idx in range(87):
+            expected_number = f"S/F-2025-02/{idx+1}"
+            self.assertEqual(
+                wynik[idx]['numer_faktury'], expected_number,
+                f"Błędny numer faktury na pozycji {idx}: {wynik[idx]['numer_faktury']} != {expected_number}"
+            )
+
+    def test_parse_with_zero_vat(self):
+        wynik = parse_marka_sales(self.plik_sprzedazy, self.matcher)
+        faktura = wynik[75]  # Faktura S/F-2025-02/76 (index 75)
+
+        self.assertEqual(faktura['numer_faktury'], 'S/F-2025-02/76')
+        self.assertAlmostEqual(faktura['vat'], 0.0, places=2)
+
+    def test_parse_with_single_vat_23(self):
+        wynik = parse_marka_sales(self.plik_sprzedazy, self.matcher)
+        faktura = wynik[76]  # Faktura S/F-2025-02/77 (index 76)
+
+        self.assertEqual(faktura['numer_faktury'], 'S/F-2025-02/77')
+        self.assertEqual(len(faktura['stawki_vat']), 1)
+        self.assertAlmostEqual(faktura['stawki_vat'][0]['stawka'], 23.0, places=2)
+
+    def test_parse_with_multiple_vat(self):
+        wynik = parse_marka_sales(self.plik_sprzedazy, self.matcher)
+        faktura = wynik[79]  # Faktura S/F-2025-02/80 (index 79)
+
+        self.assertEqual(faktura['numer_faktury'], 'S/F-2025-02/80')
+        self.assertEqual(len(faktura['stawki_vat']), 2)
+
+        stawki = sorted(faktura['stawki_vat'], key=lambda x: x['stawka'])
+        self.assertAlmostEqual(stawki[0]['stawka'], 8.0, places=2)
+        self.assertAlmostEqual(stawki[1]['stawka'], 23.0, places=2)
+
+    def test_parse_first_invoice(self):
+        wynik = parse_marka_sales(self.plik_sprzedazy, self.matcher)
+        faktura = wynik[0]
+
+        self.assertEqual(faktura['numer_faktury'], 'S/F-2025-02/1')
+        self.assertIsNotNone(faktura['data_wystawienia'])
+        self.assertIsNotNone(faktura['data_sprzedazy'])
 
 
 if __name__ == "__main__":
-    test_parse_marka_sales()
+    unittest.main()

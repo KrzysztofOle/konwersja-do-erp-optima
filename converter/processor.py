@@ -1,30 +1,43 @@
 # === processor.py ===
+from pathlib import Path
 import pandas as pd
-from converter.dom5_parser import Dom5Parser
-from converter.optima_formatter import OptimaFormatter
+from converter.marka_parser import parse_marka_sales
 from converter.contractor_matcher import ContractorMatcher
+from converter.optima_formatter import OptimaFormatter
 
 
-def analiza_zestawienia_faktur(sciezka_csv, sciezka_lista_firm, wynikowy_plik):
-    # 1. Wczytaj CSV do DataFrame
-    df = pd.read_csv(sciezka_csv)
+class Processor:
+    def __init__(self, config):
+        self.config = config
 
-    try:
-        # 2. Przetwórz DataFrame przez Dom5Parser
-        df_przetworzony = Dom5Parser.parse(df)
-    except ValueError as e:
-        raise ValueError(f"Błąd w pliku {sciezka_csv} - {str(e)}") from e
+    def przetworz_dane(self):
+        plik_sprzedazy = Path(self.config['sciezki']['sciezka_pliku_csv'])
+        plik_kontrahenci = Path(self.config['sciezki']['sciezka_lista_firm'])
+        plik_wynikowy = Path(self.config['sciezki']['sciezka_pliku_wynikowego'])
 
-    # 3. Dopasuj kontrahentów
-    matcher = ContractorMatcher(sciezka_lista_firm)
-    df_po_dopasowaniu = matcher.dopasuj(df_przetworzony)
+        matcher = ContractorMatcher(plik_kontrahenci)
+        dane_sprzedazy = parse_marka_sales(plik_sprzedazy, matcher)
 
-    # 4. Sformatuj dane do pliku tekstowego
-    formatter = OptimaFormatter()
-    dane_sformatowane = formatter.formatuj(df_po_dopasowaniu)
+        dane_df = pd.DataFrame(dane_sprzedazy)
 
-    # 5. Zapisz wynik do pliku
-    with open(wynikowy_plik, 'w', encoding='utf-8') as f:
-        f.write(dane_sformatowane)
+        wymagane_kolumny = [
+            'kod_kontrahenta', 'nazwa_pelna', 'adres', 'nip',
+            'numer_faktury', 'data_sprzedazy', 'data_wystawienia',
+            'wartosc_netto', 'vat', 'wartosc_brutto'
+        ]
 
-    return wynikowy_plik
+        for kolumna in wymagane_kolumny:
+            if kolumna not in dane_df.columns:
+                dane_df[kolumna] = ''
+
+        dane_df = dane_df.fillna('')
+
+        # NOWE: Zamiana kolumn dat na datetime
+        for kolumna in ['data_sprzedazy', 'data_wystawienia']:
+            if kolumna in dane_df.columns:
+                dane_df[kolumna] = pd.to_datetime(dane_df[kolumna], errors='coerce')
+
+        tekst_do_zapisu = OptimaFormatter.format_full(dane_df)
+
+        with plik_wynikowy.open('w', encoding='utf-8') as f:
+            f.write(tekst_do_zapisu)

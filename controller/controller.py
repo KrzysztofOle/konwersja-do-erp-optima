@@ -1,7 +1,6 @@
 # === controller.py ===
 from pathlib import Path
-# from converter.processor import analiza_zestawienia_faktur
-from converter.przetwarzaj_zestawienia import analiza_zestawienia_faktur
+from processor import Processor
 
 
 class Controller:
@@ -9,9 +8,12 @@ class Controller:
         if not config.has_section('sciezki'):
             raise ValueError("Brakuje sekcji [sciezki] w pliku config.ini!")
 
+        self.config = config
         self.sciezka_lista_firm = Path(config.get('sciezki', 'sciezka_lista_firm'))
         self.sciezka_pliku_csv = Path(config.get('sciezki', 'sciezka_pliku_csv'))
+        self.sciezka_pliku_wynikowego = Path(config.get('sciezki', 'sciezka_pliku_wynikowego'))
         self.gui_mode = gui_mode
+        self.processor = Processor(config)
 
     def set_lista_firm_path(self, path):
         self.sciezka_lista_firm = Path(path)
@@ -31,10 +33,8 @@ class Controller:
             self._blad("Wadliwa ścieżka do pliku sprzedaży!")
             return None
 
-        wynikowy_plik = self.sciezka_pliku_csv.with_stem(self.sciezka_pliku_csv.stem + "_OPTIMA").with_suffix(".txt")
-        result = analiza_zestawienia_faktur(self.sciezka_pliku_csv, self.sciezka_lista_firm, wynikowy_plik)
-        self._info(f"Wynik zapisany do: {result}")
-        return result
+        self.processor.przetworz_dane()
+        self._info(f"Wynik zapisany do: {self.sciezka_pliku_wynikowego}")
 
     def _blad(self, komunikat):
         if self.gui_mode:
