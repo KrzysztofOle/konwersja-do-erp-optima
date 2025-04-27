@@ -78,3 +78,33 @@ Testy obejmują:
 ## Autor
 Projekt rozwijany w ramach **konwersji raportów dla ERP Optima BR**.  
 Wersja robocza (kwiecień 2025).
+
+# 📈 Roadmap projektu "Konwersja raportów do ERP Optima BR"
+
+## Etap 1 — Wersja stabilna 1.0 (✅ ukończone)
+- [x] Parser sprzedaży z pliku `sprzedaz.csv`
+- [x] Obsługa faktur z wieloma stawkami VAT
+- [x] Walidacja: suma VAT z faktury = suma VAT z pozycji
+- [x] Dopasowanie kontrahentów na podstawie NIP (`listaFirm.csv`)
+- [x] Obsługa braku NIP i nietypowych nazw kontrahentów
+- [x] Generowanie pliku TXT zgodnego z formatem ERP Optima
+- [x] Pełne testy jednostkowe dla parsera i walidacji
+
+## Etap 2 — Plan na wersję 1.1 (📅 maj 2025)
+- [ ] Automatyczne mapowanie pól dodatkowych (Opis, Uwagi)
+- [ ] Opcjonalne ustawienia eksportu: separatory, kodowanie, dodatkowe kolumny
+- [ ] Obsługa dokumentów typu korekta (faktury korygujące)
+- [ ] Wstępna walidacja poprawności NIP i formatów dat
+- [ ] Lepsze logowanie procesu konwersji (plik log.txt)
+
+## Etap 3 — Plan na wersję 2.0 (📅 lato 2025)
+- [ ] Prosty interfejs graficzny (GUI) — wybór plików wejścia/wyjścia
+- [ ] Edytor danych przed eksportem (np. poprawki nazw kontrahentów)
+- [ ] Obsługa wielu typów dokumentów: paragony, zaliczki, noty księgowe
+- [ ] Wersja instalacyjna EXE (PyInstaller) dla Windows 10/11
+- [ ] Tryb wsadowy — konwersja wielu plików jednocześnie
+
+---
+
+> **Status aktualizacji:** kwiecień 2025  
+> **Następny kamień milowy:** wydanie wersji **1.1** z funkcjami rozszerzonymi 🔥
