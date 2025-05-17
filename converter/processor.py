@@ -41,3 +41,32 @@ class Processor:
 
         with plik_wynikowy.open('w', encoding='utf-8') as f:
             f.write(tekst_do_zapisu)
+
+    def przetworz_dane_manualnie(self, plik_sprzedazy: Path, plik_kontrahenci: Path, plik_wynikowy: Path):
+        print('przetworz_dane_manualnie:')
+        print(f'   plik_kontrahenci: {plik_kontrahenci}')
+        print(f'     plik_sprzedazy: {plik_sprzedazy}')
+        matcher = ContractorMatcher(plik_kontrahenci)
+        dane_sprzedazy = parse_marka_sales(plik_sprzedazy, matcher)
+
+        dane_df = pd.DataFrame(dane_sprzedazy)
+
+        wymagane_kolumny = [
+            'kod_kontrahenta', 'nazwa_pelna', 'adres', 'nip',
+            'numer_faktury', 'data_sprzedazy', 'data_wystawienia',
+            'wartosc_netto', 'vat', 'wartosc_brutto'
+        ]
+
+        for kolumna in wymagane_kolumny:
+            if kolumna not in dane_df.columns:
+                dane_df[kolumna] = ''
+
+        dane_df = dane_df.fillna('')
+        for kolumna in ['data_sprzedazy', 'data_wystawienia']:
+            if kolumna in dane_df.columns:
+                dane_df[kolumna] = pd.to_datetime(dane_df[kolumna], errors='coerce')
+
+        tekst_do_zapisu = OptimaFormatter.format_full(dane_df)
+
+        with plik_wynikowy.open('w', encoding='utf-8') as f:
+            f.write(tekst_do_zapisu)
