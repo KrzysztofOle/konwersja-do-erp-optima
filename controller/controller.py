@@ -1,4 +1,8 @@
-# === controller.py ===
+"""
+klasa Controller która ...
+Plik: controller/controller.py
+"""
+
 from pathlib import Path
 from processor import Processor
 
@@ -33,7 +37,11 @@ class Controller:
             self._blad("Wadliwa ścieżka do pliku sprzedaży!")
             return None
 
-        self.processor.przetworz_dane()
+        self.processor.przetworz_dane_manualnie(
+            self.sciezka_pliku_csv,
+            self.sciezka_lista_firm,
+            self.sciezka_pliku_wynikowego
+        )
         self._info(f"Wynik zapisany do: {self.sciezka_pliku_wynikowego}")
 
     def _blad(self, komunikat):

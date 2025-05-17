@@ -6,7 +6,7 @@ from converter.marka_parser import parse_marka_sales
 
 def test_parse_marka_sales():
     plik_sprzedazy = Path("../data/input/sprzedaz.csv")
-    plik_kontrahenci = Path("../data/input/listaFirm.csv")
+    plik_kontrahenci = Path("../data/input/listaFirm_MARKA_JDG.csv")
 
     matcher = ContractorMatcher(plik_kontrahenci)
     wynik = parse_marka_sales(plik_sprzedazy, matcher)

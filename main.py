@@ -1,4 +1,7 @@
-# === main.py ===
+"""
+Główny plik aplikacji
+Plik: main.py
+"""
 import sys
 import configparser
 from tkinter import Tk

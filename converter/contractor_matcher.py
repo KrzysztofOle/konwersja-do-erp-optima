@@ -21,7 +21,7 @@ class ContractorMatcher:
                 break
 
         if self.name_column is None:
-            raise ValueError("Brak kolumny z nazwą kontrahenta w pliku listaFirm.csv!")
+            raise ValueError("Brak kolumny z nazwą kontrahenta w pliku listaFirm_MARKA_JDG.csv!")
 
     def match_by_nip(self, nip: str) -> Optional[Contractor]:
         result = self.contractors_df[self.contractors_df['NIP'] == nip]

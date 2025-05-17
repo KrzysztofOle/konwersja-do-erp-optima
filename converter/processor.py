@@ -1,4 +1,8 @@
-# === processor.py ===
+"""
+zawiera klasę Processor
+Plik: converter/processor.py
+"""
+
 from pathlib import Path
 import pandas as pd
 from converter.marka_parser import parse_marka_sales

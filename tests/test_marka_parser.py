@@ -9,7 +9,7 @@ class TestMarkaParser(unittest.TestCase):
 
     def setUp(self):
         self.plik_sprzedazy = Path("../data/input/sprzedaz.csv")
-        self.plik_kontrahenci = Path("../data/input/listaFirm.csv")
+        self.plik_kontrahenci = Path("../data/input/listaFirm_MARKA_JDG.csv")
         self.matcher = ContractorMatcher(self.plik_kontrahenci)
 
     def test_liczba_faktur(self):

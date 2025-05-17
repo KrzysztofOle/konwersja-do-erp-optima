@@ -1,4 +1,9 @@
+"""
+zawera analiza_zestawienia_faktur
+Plik: converter/przetwarzaj_zestawienia.py
+"""
 # przetwarzaj_zestawienia.py
+
 
 import numpy as np
 import pandas as pd
