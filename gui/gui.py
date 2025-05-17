@@ -4,7 +4,7 @@ Plik: gui/gui.py
 """
 
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 import configparser
 from pathlib import Path
 from controller.controller import Controller
@@ -66,9 +66,11 @@ class App:
             title="Wybierz plik CSV z firmami",
             filetypes=[("Pliki CSV", "*.csv")]
         )
-        if file_path:
+        if file_path and self._plik_jest_lista_firm(file_path):
             self.controller.set_lista_firm_path(file_path)
-            self.label_lista_firm.config(text=str(file_path))
+            self.label_lista_firm.config(text=f"Plik z firmami: {file_path}")
+        elif file_path:
+            messagebox.showerror("Błąd pliku", "Wybrany plik nie wygląda na listę firm (brak nagłówka z kolumnami: Kod;Nazwa;NIP;...)")
 
     def wybierz_plik_csv(self):
         default_dir = self.controller.sciezka_pliku_csv.parent if self.controller.sciezka_pliku_csv.exists() else "data/input"
@@ -77,6 +79,25 @@ class App:
             title="Wybierz plik CSV do importu",
             filetypes=[("Pliki CSV", "*.csv")]
         )
-        if file_path:
+        if file_path and self._plik_jest_zestawieniem_sprzedazy(file_path):
             self.controller.set_plik_csv_path(file_path)
-            self.label_plik_csv.config(text=str(file_path))
+            self.label_plik_csv.config(text=f"Plik sprzedaży: {file_path}")
+        elif file_path:
+            messagebox.showerror("Błąd pliku", "Wybrany plik nie wygląda na plik sprzedaży (brak drugiego wiersza: \"Zestawienie dokumentów sprzedaży wg daty księgowej\")")
+
+    def _plik_jest_lista_firm(self, filepath):
+        try:
+            with open(filepath, encoding="utf-8") as f:
+                naglowek = f.readline().strip()
+                return naglowek.startswith("Kod;Nazwa;NIP")
+        except Exception:
+            return False
+
+    def _plik_jest_zestawieniem_sprzedazy(self, filepath):
+        try:
+            with open(filepath, encoding="utf-8") as f:
+                _ = f.readline()  # pomijamy pierwszy wiersz
+                drugi_wiersz = f.readline().strip().strip('"')
+                return drugi_wiersz.startswith("Zestawienie dokumentów sprzedaży wg daty księgowej")
+        except Exception:
+            return False
