@@ -4,7 +4,7 @@ Plik: controller/controller.py
 """
 
 from pathlib import Path
-from processor import Processor
+from converter.processor import Processor
 
 
 class Controller:
