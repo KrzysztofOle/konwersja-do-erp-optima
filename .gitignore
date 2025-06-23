@@ -177,3 +177,4 @@ cython_debug/
 data/input/
 data/output/
 /pakiet_aktualizacji.zip
+.idea/
