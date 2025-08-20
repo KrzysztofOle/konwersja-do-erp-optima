@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Start z GUI",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Start bez GUI (--nogui)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--nogui"
+            ]
+        },
+        {
+            "name": "Debug: analiza_zestawienia_faktur",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/converter/przetwarzaj_zestawienia.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--test"
+            ]
+        }
+    ]
+}

@@ -176,5 +176,6 @@ cython_debug/
 # moje wpisy specyficzne dla aplikacji
 data/input/
 data/output/
+data/
 /pakiet_aktualizacji.zip
 .idea/

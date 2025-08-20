@@ -751,18 +751,28 @@ def analiza_zestawienia_faktur(plik_csv: Path, plik_kontrahenci:Path, plik_konco
     print(f"Plik wynikowy CSV zapisany jako {plik_koncowy}")
     return str(plik_koncowy)
 
+# if __name__ == "__main__":
+#     # Ścieżka do pliku CSV
+#     plik_csv = Path('/Users/krzysztof/PycharmProjects/Optima_SOTAX/DaneMarka/2025.02 - sprzedaż MARKA JDG z kontrahentami.csv')
+
+#     # plik_posredni = 'DaneMarka/2025_01-MARKA_JDG_sprzedaż_z_kontrahentami_tmp.csv'
+#     # plik_posredni = Path('DaneMarka/2025_01-MARKA_JDG_sprzedaż_z_kontrahentami_tmp.csv')
+
+#     # TODO: dodać podpinanie plikow z kontrachentami w excel:cd /us
+#     plik_kontrahenci = Path('/Users/krzysztof/PycharmProjects/Optima_SOTAX/DaneMarka/kontrahenci_Marka_JDG_20250218.csv')
+
+#     plik_koncowy = Path('/Users/krzysztof/PycharmProjects/Optima_SOTAX/DaneMarka/2025_02-MARKA_JDG_do_Optima_utf-8-sig.txt')
+
+#     analiza_zestawienia_faktur(plik_csv, plik_kontrahenci, plik_koncowy)
+
 if __name__ == "__main__":
-    # Ścieżka do pliku CSV
-    plik_csv = Path('/Users/krzysztof/PycharmProjects/Optima_SOTAX/DaneMarka/2025.02 - sprzedaż MARKA JDG z kontrahentami.csv')
+    import configparser
 
-    # plik_posredni = 'DaneMarka/2025_01-MARKA_JDG_sprzedaż_z_kontrahentami_tmp.csv'
-    # plik_posredni = Path('DaneMarka/2025_01-MARKA_JDG_sprzedaż_z_kontrahentami_tmp.csv')
+    config = configparser.ConfigParser()
+    config.read('config.ini')
 
-    # TODO: dodać podpinanie plikow z kontrachentami w excel:cd /us
-    plik_kontrahenci = Path('/Users/krzysztof/PycharmProjects/Optima_SOTAX/DaneMarka/kontrahenci_Marka_JDG_20250218.csv')
-
-    plik_koncowy = Path('/Users/krzysztof/PycharmProjects/Optima_SOTAX/DaneMarka/2025_02-MARKA_JDG_do_Optima_utf-8-sig.txt')
+    plik_csv = Path(config['sciezki']['sciezka_pliku_csv'])
+    plik_kontrahenci = Path(config['sciezki']['sciezka_lista_firm'])
+    plik_koncowy = Path(config['sciezki']['sciezka_pliku_wynikowego'])
 
     analiza_zestawienia_faktur(plik_csv, plik_kontrahenci, plik_koncowy)
-
-
