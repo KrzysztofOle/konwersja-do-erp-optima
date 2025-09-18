@@ -6,15 +6,16 @@ from converter.dom5_parser import Dom5Parser
 class TestDom5Parser(unittest.TestCase):
     def setUp(self):
         # Przykładowe dane wejściowe
+        # --- poprawka: Ustandaryzowano nagłówki kolumn testowych do formatu parsera — 2025-09-18T21:33:53+02:00 ---
         self.input_data = pd.DataFrame({
             'Nazwa kontrahenta': ['ABC Sp. z o.o.'],
             'NIP': ['1234567890'],
             'Numer faktury': ['Fakt/001/2024'],
-            'Data sprzedaży': ['15.04.2024'],
+            'Data sprzedazy': ['15.04.2024'],
             'Data wystawienia': ['16.04.2024'],
-            'Wartość netto': ['1000,00'],
+            'Wartosc netto': ['1000,00'],
             'VAT': ['230,00'],
-            'Wartość brutto': ['1230,00']
+            'Wartosc brutto': ['1230,00']
         })
 
     def test_parse_successful(self):

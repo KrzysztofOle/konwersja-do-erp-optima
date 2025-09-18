@@ -15,7 +15,7 @@ from pathlib import Path
 
 ENCODING = "utf-8-sig"   # "latin1"  #   "windows-1250"       # "utf-8"
 
-def analiza_zestawienia_faktur(plik_csv: Path, plik_kontrahenci:Path, plik_koncowy:Path=None) -> None:
+def analiza_zestawienia_faktur(plik_csv: Path, plik_kontrahenci:Path, plik_koncowy:Path|None) -> None:
     """
     Analizuje zestawienie faktur i przygotowuje dane do importu do optimy
     :param plik_csv: Plik z danymi do importu, ale w formacie niezgodnym z optima
@@ -774,5 +774,11 @@ if __name__ == "__main__":
     plik_csv = Path(config['sciezki']['sciezka_pliku_csv'])
     plik_kontrahenci = Path(config['sciezki']['sciezka_lista_firm'])
     plik_koncowy = Path(config['sciezki']['sciezka_pliku_wynikowego'])
+
+    analiza_zestawienia_faktur(plik_csv, plik_kontrahenci, plik_koncowy)
+    
+    plik_csv = Path(config['sciezki']['sciezka_pliku_csv_2'])
+    plik_kontrahenci = Path(config['sciezki']['sciezka_lista_firm_2'])
+    plik_koncowy = Path(config['sciezki']['sciezka_pliku_wynikowego_2'])
 
     analiza_zestawienia_faktur(plik_csv, plik_kontrahenci, plik_koncowy)

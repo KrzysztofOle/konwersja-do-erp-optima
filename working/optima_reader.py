@@ -134,8 +134,13 @@ if __name__ == "__main__":
 
     config = configparser.ConfigParser()
     config.read('config.ini')
+    
+    print('\n\n\n')
 
     plik = Path(config['sciezki']['sciezka_pliku_wynikowego'])
+    
+    print('-' * 40)
+    print(f'Kontrola pliku: {plik}')
 
     df = read_optima_export(plik)
     print(f'Wczytano {len(df)} wierszy z pliku: {plik}')
@@ -161,6 +166,38 @@ if __name__ == "__main__":
         print(f"Uwaga: Suma brutto ({brutto_sum:.2f}) nie zgadza się z sumą netto ({netto_sum:.2f}) i VAT ({vat_sum:.2f}).")
     else:
         print(f"Suma brutto ({brutto_sum:.2f}) zgadza się z sumą netto ({netto_sum:.2f}) i VAT ({vat_sum:.2f}).")
+    print('=' * 40)
+    
+    print('\n\n\n')
+    plik2 = Path(config['sciezki']['sciezka_pliku_wynikowego_2'])
+    
     print('-' * 40)
+    print(f'Kontrola pliku: {plik2}')
+
+    df = read_optima_export(plik2)
+    print(f'Wczytano {len(df)} wierszy z pliku: {plik2}')
+    print(df.columns.tolist())
+    print('-' * 40 + '\n\n\nPrzykładowe dane:\n')
+    print(df.head(10))
+
+    # przykład sumowania
+    kolumny_do_sumy = ["brutto", "netto_1", "netto_2", "netto_3", "vat_1", "vat_2", "vat_3"]
+    suma = sum_columns(df, kolumny_do_sumy)
+
+    print("\n\nSumy wybranych kolumn:")
+    for k, v in suma.items():
+        print(f"{k}: {v:.2f}")
+
+    # sprawdzenie sumy netto i vat
+    brutto_sum = suma.get("brutto", 0.0)
+    netto_sum = suma.get("netto_1", 0.0) + suma.get("netto_2", 0.0) + suma.get("netto_3", 0.0)
+    vat_sum = suma.get("vat_1", 0.0) + suma.get("vat_2", 0.0) + suma.get("vat_3", 0.0)
+
+    print('-' * 40)
+    if abs(brutto_sum - (netto_sum + vat_sum)) > 0.01:
+        print(f"Uwaga: Suma brutto ({brutto_sum:.2f}) nie zgadza się z sumą netto ({netto_sum:.2f}) i VAT ({vat_sum:.2f}).")
+    else:
+        print(f"Suma brutto ({brutto_sum:.2f}) zgadza się z sumą netto ({netto_sum:.2f}) i VAT ({vat_sum:.2f}).")
+    print('=' * 40)
     print("Koniec programu.")
     

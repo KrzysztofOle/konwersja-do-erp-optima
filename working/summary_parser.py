@@ -231,3 +231,10 @@ if __name__ == "__main__":
     print("\n\n== PODSUMOWANIA ==")
     print(f'  dla pliku: {plik}\n')
     print_summary_dict(res)
+    
+    plik2 = Path(config['sciezki']['sciezka_pliku_csv_2'])
+
+    res = parse_summary_from_dom5_csv(plik2)
+    print("\n\n== PODSUMOWANIA ==")
+    print(f'  dla pliku: {plik2}\n')
+    print_summary_dict(res)
